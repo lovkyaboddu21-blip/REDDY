@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelIndia - Complete Travel Booking Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .user-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section - FIXED */
+        #home-section {
+            padding: 0 !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.85), rgba(14, 165, 233, 0.85)), 
+                        url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200') center/cover no-repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .hero-content {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        /* Booking Tabs */
+        .booking-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            animation: fadeInUp 1s ease 0.3s backwards;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Search Container */
+        .search-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .search-field {
+            position: relative;
+        }
+
+        .search-field label {
+            display: block;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .search-field input, .search-field select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-field input:focus, .search-field select:focus {
+            border-color: var(--primary);
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Destination Cards */
+        .dest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dest-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .dest-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .dest-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .dest-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.3));
+        }
+
+        .badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .badge-green {
+            background: var(--success);
+        }
+
+        .badge-purple {
+            background: #8b5cf6;
+        }
+
+        .dest-info {
+            padding: 1.5rem;
+        }
+
+        .dest-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .dest-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .dest-price {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .rating {
+            color: #fbbf24;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .dest-features {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            background: #eff6ff;
+            color: var(--primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Booking History */
+        .history-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .booking-item {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .booking-item:hover {
+            border-color: var(--primary);
+        }
+
+        .booking-info h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-details {
+            display: grid;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-download {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+        }
+
+        .btn-view {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .empty-history i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .stat-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 2rem;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+            color: #94a3b8;
+        }
+
+        .footer-col ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: #94a3b8;
+            font-size: 1.3rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-3px);
+            background: #1d4ed8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .booking-tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .success-message {
+            display: none;
+            background: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 3000;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* View Modal */
+        .view-modal-body {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .view-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .view-row:last-child {
+            border-bottom: none;
+        }
+
+        .view-label {
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .view-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-plane"></i>
+                TravelIndia
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="showSection('home')">Home</a></li>
+                <li><a onclick="showSection('destinations')">Destinations</a></li>
+                <li><a onclick="showSection('hotels')">Hotels</a></li>
+                <li><a onclick="showSection('packages')">Packages</a></li>
+                <li><a onclick="showSection('history')">My Bookings</a></li>
+            </ul>
+            <div class="user-menu">
+                <button class="btn-primary" onclick="showSection('history')">
+                    <i class="fas fa-history"></i> Booking History
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Booking confirmed!</span>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Home Section -->
+    <section id="home-section" class="hero">
+        <div class="hero-content">
+            <h1>🇮🇳 Discover Incredible India</h1>
+            <p>Book flights, hotels, and packages at best prices — Experience the magic of every corner of India</p>
+            
+            <!-- Booking Tabs -->
+            <div class="booking-tabs">
+                <button class="tab-btn active" onclick="switchTab('flights')">
+                    <i class="fas fa-plane"></i> Flights
+                </button>
+                <button class="tab-btn" onclick="switchTab('hotels')">
+                    <i class="fas fa-hotel"></i> Hotels
+                </button>
+                <button class="tab-btn" onclick="switchTab('packages')">
+                    <i class="fas fa-suitcase"></i> Packages
+                </button>
+            </div>
+
+            <!-- Search Container -->
+            <div class="search-container" id="searchContainer">
+                <div class="search-grid">
+                    <div class="search-field">
+                        <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                        <input type="text" id="searchDest" placeholder="Where do you want to go?" onkeyup="filterDestinations()">
+                    </div>
+                    <div class="search-field">
+                        <label><i class="fas fa-calendar"></i> Check-in Date</label>
+                        <input type="date" id="checkInDate">
+                    </div>
+                    <div class="search-field">
+                        <label><i class="fas fa-calendar"></i> Check-out Date</label>
+                        <input type="date" id="checkOutDate">
+                    </div>
+                    <div class="search-field">
+                        <label><i class="fas fa-users"></i> Travelers</label>
+                        <select id="travelers">
+                            <option value="1">1 Person</option>
+                            <option value="2" selected>2 People</option>
+                            <option value="3">3 People</option>
+                            <option value="4">4 People</option>
+                            <option value="5">5+ People</option>
+                        </select>
+                    </div>
+                    <div class="search-field">
+                        <button class="btn-secondary" style="width: 100%; margin-top: 1.8rem;" onclick="searchBookings()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section id="destinations-section" style="display: none;">
+        <h2 class="section-title">Popular Destinations</h2>
+        <p class="section-subtitle">Explore the most beautiful places across India</p>
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterByCategory('all', this)">All</button>
+            <button class="filter-btn" onclick="filterByCategory('beach', this)">🏖️ Beaches</button>
+            <button class="filter-btn" onclick="filterByCategory('mountain', this)">🏔️ Mountains</button>
+            <button class="filter-btn" onclick="filterByCategory('heritage', this)">🏛️ Heritage</button>
+            <button class="filter-btn" onclick="filterByCategory('spiritual', this)">🕉️ Spiritual</button>
+            <button class="filter-btn" onclick="filterByCategory('adventure', this)">🎯 Adventure</button>
+            <button class="filter-btn" onclick="filterByCategory('nature', this)">🌿 Nature</button>
+        </div>
+        <div class="dest-grid" id="destGrid"></div>
+    </section>
+
+    <!-- Hotels Section -->
+    <section id="hotels-section" style="display: none;">
+        <h2 class="section-title">Featured Hotels</h2>
+        <p class="section-subtitle">Stay at India's finest luxury and boutique hotels</p>
+        <div class="dest-grid" id="hotelsGrid"></div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packages-section" style="display: none;">
+        <h2 class="section-title">Travel Packages</h2>
+        <p class="section-subtitle">Complete holiday packages with flights, hotels & sightseeing</p>
+        <div class="dest-grid" id="packagesGrid"></div>
+    </section>
+
+    <!-- Booking History Section -->
+    <section id="history-section" style="display: none;">
+        <h2 class="section-title">My Booking History</h2>
+        <p class="section-subtitle">View, download, and manage all your bookings</p>
+        <div class="stats-bar" id="statsBar"></div>
+        <div class="history-container">
+            <div id="historyList"></div>
+        </div>
+    </section>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Complete Your Booking</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="success-message" id="successMsg">
+                <i class="fas fa-check-circle"></i> Booking confirmed! PDF downloaded.
+            </div>
+            <form id="bookingForm" onsubmit="handleBooking(event)">
+                <input type="hidden" id="bookingType">
+                <input type="hidden" id="itemName">
+                <input type="hidden" id="itemPrice">
+                
+                <div style="background: #eff6ff; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <p style="color: var(--primary); font-weight: 600;" id="bookingSummary"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="custName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="custEmail" required placeholder="your.email@example.com">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone</label>
+                    <input type="tel" id="custPhone" required placeholder="+91 98765 43210">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-venus-mars"></i> Gender</label>
+                    <select id="custGender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-check"></i> Check-in</label>
+                        <input type="date" id="modalCheckIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-times"></i> Check-out</label>
+                        <input type="date" id="modalCheckOut" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-users"></i> Number of Travelers</label>
+                    <select id="modalTravelers" required>
+                        <option value="1">1 Person</option>
+                        <option value="2" selected>2 People</option>
+                        <option value="3">3 People</option>
+                        <option value="4">4 People</option>
+                        <option value="5">5 People</option>
+                        <option value="6">6+ People</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                    <textarea id="custAddress" rows="3" placeholder="Your complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-credit-card"></i> Payment Method</label>
+                    <select id="custPayment" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="upi">UPI (GPay/PhonePe/Paytm)</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="netbanking">Net Banking</option>
+                        <option value="emi">EMI</option>
+                        <option value="cash">Cash on Arrival</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Confirm Booking <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Booking Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Booking Details</h2>
+                <button class="close-modal" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div class="view-modal-body" id="viewModalBody"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3><i class="fas fa-plane"></i> TravelIndia</h3>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your trusted partner for exploring incredible India. Book flights, hotels, and holiday packages at the best prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Popular Destinations</h3>
+                <ul>
+                    <li><a href="#">Goa Beaches</a></li>
+                    <li><a href="#">Kerala Backwaters</a></li>
+                    <li><a href="#">Kashmir Valley</a></li>
+                    <li><a href="#">Rajasthan Forts</a></li>
+                    <li><a href="#">Ladakh Adventures</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Support</a></li>
+                    <li><a href="#">Cancellation Policy</a></li>
+                    <li><a href="#">Travel Insurance</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> 1800-123-4567</li>
+                    <li><i class="fas fa-envelope"></i> support@travelindia.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Mumbai, Maharashtra, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TravelIndia. All rights reserved. Made with ❤️ in India</p>
+        </div>
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const destinations = [
+            { id: 1, name: "Goa Beaches", location: "Goa", price: 15000, rating: 4.8, category: "beach", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800", type: "destination", features: ["Beach", "Nightlife", "Water Sports"] },
+            { id: 2, name: "Kerala Backwaters", location: "Alleppey, Kerala", price: 18000, rating: 4.9, category: "nature", image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800", type: "destination", badge: "Popular", features: ["Houseboat", "Nature", "Ayurveda"] },
+            { id: 3, name: "Taj Mahal", location: "Agra, Uttar Pradesh", price: 8000, rating: 4.7, category: "heritage", image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800", type: "destination", features: ["Heritage", "UNESCO", "Romantic"] },
+            { id: 4, name: "Jaipur Pink City", location: "Jaipur, Rajasthan", price: 12000, rating: 4.6, category: "heritage", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800", type: "destination", features: ["Forts", "Culture", "Shopping"] },
+            { id: 5, name: "Kashmir Valley", location: "Srinagar, J&K", price: 25000, rating: 4.9, category: "mountain", image: "https://images.unsplash.com/photo-1597074866923-dc0589150458?w=800", type: "destination", badge: "Trending", features: ["Shikara", "Mountains", "Gardens"] },
+            { id: 6, name: "Mumbai Gateway", location: "Mumbai, Maharashtra", price: 10000, rating: 4.5, category: "heritage", image: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800", type: "destination", features: ["City Life", "Bollywood", "Food"] },
+            { id: 7, name: "Varanasi Ghats", location: "Varanasi, UP", price: 9000, rating: 4.8, category: "spiritual", image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800", type: "destination", features: ["Spiritual", "Ganga Aarti", "Ancient"] },
+            { id: 8, name: "Manali Hills", location: "Manali, Himachal Pradesh", price: 20000, rating: 4.7, category: "mountain", image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800", type: "destination", features: ["Snow", "Adventure", "Trekking"] },
+            { id: 9, name: "Rishikesh Adventure", location: "Rishikesh, Uttarakhand", price: 14000, rating: 4.6, category: "adventure", image: "https://images.unsplash.com/photo-1600298882525-1ac26f831593?w=800", type: "destination", features: ["Rafting", "Yoga", "Bungee"] },
+            { id: 10, name: "Puducherry", location: "Puducherry", price: 13000, rating: 4.5, category: "beach", image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800", type: "destination", features: ["French Colony", "Beach", "Cafes"] },
+            { id: 11, name: "Ladakh", location: "Leh, Ladakh", price: 35000, rating: 4.9, category: "adventure", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800", type: "destination", badge: "Adventure", features: ["Biking", "Monasteries", "Lakes"] },
+            { id: 12, name: "Mysore Heritage", location: "Mysore, Karnataka", price: 11000, rating: 4.6, category: "heritage", image: "https://images.unsplash.com/photo-1600112356915-089f78e0ae21?w=800", type: "destination", features: ["Palace", "Gardens", "Silk"] },
+            { id: 13, name: "Andaman Islands", location: "Port Blair, Andaman", price: 30000, rating: 4.8, category: "beach", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800", type: "destination", badge: "Island", features: ["Scuba Diving", "Beach", "Coral"] },
+            { id: 14, name: "Darjeeling Hills", location: "Darjeeling, West Bengal", price: 16000, rating: 4.7, category: "mountain", image: "https://images.unsplash.com/photo-1622308644420-b1defdee4da2?w=800", type: "destination", features: ["Tea Gardens", "Toy Train", "Kanchenjunga"] },
+            { id: 15, name: "Udaipur Lakes", location: "Udaipur, Rajasthan", price: 14000, rating: 4.8, category: "heritage", image: "https://images.unsplash.com/photo-1602301066009-7e4c7034e89f?w=800", type: "destination", badge: "Romantic", features: ["Lake Palace", "Sunset", "Heritage"] },
+            { id: 16, name: "Hampi Ruins", location: "Hampi, Karnataka", price: 9000, rating: 4.6, category: "heritage", image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800", type: "destination", features: ["UNESCO", "Ruins", "Bouldering"] },
+            { id: 17, name: "Munnar Tea Gardens", location: "Munnar, Kerala", price: 15000, rating: 4.7, category: "nature", image: "https://images.unsplash.com/photo-1625046561078-7c1e1f37e8b5?w=800", type: "destination", features: ["Tea Estates", "Waterfalls", "Cool Weather"] },
+            { id: 18, name: "Ranthambore Safari", location: "Ranthambore, Rajasthan", price: 22000, rating: 4.6, category: "adventure", image: "https://images.unsplash.com/photo-1574870111867-089730e5a72b?w=800", type: "destination", badge: "Wildlife", features: ["Tiger Safari", "Fort", "Nature"] },
+            { id: 19, name: "Amritsar Golden Temple", location: "Amritsar, Punjab", price: 10000, rating: 4.9, category: "spiritual", image: "https://images.unsplash.com/photo-1514222134-b57cbb8ce073?w=800", type: "destination", features: ["Golden Temple", "Wagah Border", "Food"] },
+            { id: 20, name: "Ooty Hills", location: "Ooty, Tamil Nadu", price: 12000, rating: 4.5, category: "mountain", image: "https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=800", type: "destination", features: ["Nilgiri Railway", "Lake", "Gardens"] },
+            { id: 21, name: "Coorg Coffee Land", location: "Coorg, Karnataka", price: 13000, rating: 4.7, category: "nature", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", type: "destination", features: ["Coffee", "Waterfalls", "Trekking"] },
+            { id: 22, name: "Shimla", location: "Shimla, Himachal Pradesh", price: 14000, rating: 4.6, category: "mountain", image: "https://images.unsplash.com/photo-1597074866923-dc0589150458?w=800", type: "destination", features: ["Mall Road", "Snow", "Colonial"] },
+            { id: 23, name: "Tirupati Temple", location: "Tirupati, Andhra Pradesh", price: 8000, rating: 4.8, category: "spiritual", image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800", type: "destination", features: ["Temple", "Spiritual", "Prasadam"] },
+            { id: 24, name: "Kaziranga Safari", location: "Kaziranga, Assam", price: 20000, rating: 4.7, category: "adventure", image: "https://images.unsplash.com/photo-1549366021-9f761d450615?w=800", type: "destination", badge: "Wildlife", features: ["Rhino", "Safari", "Wetlands"] },
+            { id: 25, name: "Kovalam Beach", location: "Kovalam, Kerala", price: 16000, rating: 4.5, category: "beach", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800", type: "destination", features: ["Lighthouse", "Ayurveda", "Surfing"] },
+            { id: 26, name: "Jodhpur Blue City", location: "Jodhpur, Rajasthan", price: 11000, rating: 4.6, category: "heritage", image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800", type: "destination", features: ["Mehrangarh", "Blue Houses", "Desert"] },
+            { id: 27, name: "Meghalaya Living Roots", location: "Shillong, Meghalaya", price: 22000, rating: 4.8, category: "nature", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", type: "destination", badge: "Hidden Gem", features: ["Root Bridges", "Waterfalls", "Caves"] },
+            { id: 28, name: "Varanasi Sunrise", location: "Varanasi, UP", price: 7500, rating: 4.7, category: "spiritual", image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800", type: "destination", features: ["Boat Ride", "Temples", "Silk"] },
+            { id: 29, name: "Spiti Valley", location: "Spiti, Himachal Pradesh", price: 28000, rating: 4.9, category: "adventure", image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800", type: "destination", badge: "Offbeat", features: ["Monastery", "Stargazing", "Remote"] },
+            { id: 30, name: "Varkala Cliff Beach", location: "Varkala, Kerala", price: 14000, rating: 4.6, category: "beach", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800", type: "destination", features: ["Cliff", "Beach", "Healing"] }
+        ];
+
+        const hotels = [
+            { id: 1, name: "Taj Lake Palace", location: "Udaipur, Rajasthan", price: 45000, rating: 4.9, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800", type: "hotel", badge: "Luxury", features: ["Lake View", "Heritage", "Spa"] },
+            { id: 2, name: "Oberoi Amarvilas", location: "Agra, UP", price: 38000, rating: 4.8, image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800", type: "hotel", features: ["Taj View", "Pool", "Fine Dining"] },
+            { id: 3, name: "The Leela Palace", location: "Udaipur, Rajasthan", price: 42000, rating: 4.8, image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800", type: "hotel", features: ["Palace", "Lake", "Luxury"] },
+            { id: 4, name: "ITC Grand Chola", location: "Chennai, TN", price: 28000, rating: 4.7, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800", type: "hotel", features: ["Business", "Spa", "Restaurants"] },
+            { id: 5, name: "Taj Mahal Palace", location: "Mumbai, Maharashtra", price: 50000, rating: 4.9, image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800", type: "hotel", badge: "Iconic", features: ["Sea View", "Historic", "Butler Service"] },
+            { id: 6, name: "Oberoi Rajvilas", location: "Jaipur, Rajasthan", price: 32000, rating: 4.7, image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", type: "hotel", features: ["Villas", "Pool", "Garden"] },
+            { id: 7, name: "Wildflower Hall", location: "Shimla, Himachal", price: 35000, rating: 4.8, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800", type: "hotel", features: ["Mountain", "Spa", "Adventure"] },
+            { id: 8, name: "The Lalit Laxmi Vilas", location: "Udaipur, Rajasthan", price: 25000, rating: 4.6, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800", type: "hotel", features: ["Heritage", "Lake", "Royal"] },
+            { id: 9, name: "Kumarakom Lake Resort", location: "Kumarakom, Kerala", price: 30000, rating: 4.8, image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800", type: "hotel", badge: "Eco", features: ["Backwater", "Ayurveda", "Pool"] },
+            { id: 10, name: "Evolve Back Hampi", location: "Hampi, Karnataka", price: 28000, rating: 4.7, image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800", type: "hotel", features: ["Heritage", "Pool", "Ruins View"] },
+            { id: 11, name: "Vivanta Dal View", location: "Srinagar, J&K", price: 22000, rating: 4.6, image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800", type: "hotel", features: ["Dal Lake", "Shikara", "Mountain View"] },
+            { id: 12, name: "RAAS Jodhpur", location: "Jodhpur, Rajasthan", price: 20000, rating: 4.7, image: "https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800", type: "hotel", badge: "Boutique", features: ["Fort View", "Rooftop", "Design"] },
+            { id: 13, name: "CGH Earth Spice Village", location: "Thekkady, Kerala", price: 15000, rating: 4.5, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800", type: "hotel", features: ["Spice Garden", "Eco", "Nature"] },
+            { id: 14, name: "The Oberoi Cecil", location: "Shimla, Himachal", price: 27000, rating: 4.7, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800", type: "hotel", features: ["Colonial", "Valley View", "Heritage"] },
+            { id: 15, name: "Alila Fort Bishangarh", location: "Jaipur, Rajasthan", price: 40000, rating: 4.8, image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800", type: "hotel", badge: "Fort Hotel", features: ["Warrior Fort", "Luxury", "Desert"] }
+        ];
+
+        const packages = [
+            { id: 1, name: "Golden Triangle Tour", location: "Delhi → Jaipur → Agra", price: 35000, rating: 4.8, image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800", type: "package", days: "5N/6D", features: ["Flights", "Hotels", "Sightseeing"] },
+            { id: 2, name: "Kerala Bliss", location: "Cochin → Munnar → Alleppey", price: 45000, rating: 4.9, image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800", type: "package", days: "7N/8D", badge: "Bestseller", features: ["Houseboat", "Tea Garden", "Backwater"] },
+            { id: 3, name: "Himachal Retreat", location: "Shimla → Manali → Dharamshala", price: 38000, rating: 4.7, image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800", type: "package", days: "6N/7D", features: ["Snow", "Adventure", "Temples"] },
+            { id: 4, name: "South India Grand Tour", location: "Chennai → Madurai → Kerala", price: 52000, rating: 4.8, image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800", type: "package", days: "10N/11D", features: ["Temples", "Backwaters", "Beach"] },
+            { id: 5, name: "Rajasthan Royal", location: "Jaipur → Udaipur → Jodhpur → Jaisalmer", price: 48000, rating: 4.8, image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800", type: "package", days: "8N/9D", badge: "Royal", features: ["Forts", "Desert Safari", "Palace Stay"] },
+            { id: 6, name: "Kashmir Paradise", location: "Srinagar → Gulmarg → Pahalgam", price: 42000, rating: 4.9, image: "https://images.unsplash.com/photo-1597074866923-dc0589150458?w=800", type: "package", days: "6N/7D", features: ["Shikara", "Gondola", "Gardens"] },
+            { id: 7, name: "Northeast Explorer", location: "Guwahati → Shillong → Cherrapunji", price: 40000, rating: 4.7, image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", type: "package", days: "7N/8D", features: ["Waterfalls", "Root Bridges", "Culture"] },
+            { id: 8, name: "Goa Beach Holiday", location: "North Goa → South Goa", price: 25000, rating: 4.6, image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800", type: "package", days: "4N/5D", features: ["Beaches", "Nightlife", "Water Sports"] },
+            { id: 9, name: "Ladakh Expedition", location: "Leh → Nubra → Pangong", price: 55000, rating: 4.9, image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800", type: "package", days: "7N/8D", badge: "Adventure", features: ["Passes", "Lakes", "Monasteries"] },
+            { id: 10, name: "Andaman Beach Escape", location: "Port Blair → Havelock → Neil", price: 48000, rating: 4.8, image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800", type: "package", days: "6N/7D", features: ["Snorkeling", "Beach", "Island Hop"] },
+            { id: 11, name: "Spiritual India", location: "Varanasi → Rishikesh → Haridwar", price: 28000, rating: 4.7, image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800", type: "package", days: "5N/6D", features: ["Ganga Aarti", "Yoga", "Temples"] },
+            { id: 12, name: "Wildlife Safari Special", location: "Jim Corbett → Ranthambore", price: 45000, rating: 4.6, image: "https://images.unsplash.com/photo-1574870111867-089730e5a72b?w=800", type: "package", days: "6N/7D", badge: "Wildlife", features: ["Tiger Safari", "Jungle", "Nature Camp"] }
+        ];
+
+        let currentTab = 'flights';
+        let bookings = JSON.parse(localStorage.getItem('travelBookings')) || [];
+
+        // ========== INITIALIZE ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            setTodayDate();
+            loadDestinations();
+            loadHotels();
+            loadPackages();
+            loadBookingHistory();
+        });
+
+        // Scroll to top button
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 300) {
+                btn.style.display = 'flex';
+            } else {
+                btn.style.display = 'none';
+            }
+        });
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            const checkIn = document.getElementById('checkInDate');
+            const checkOut = document.getElementById('checkOutDate');
+            if (checkIn) checkIn.setAttribute('min', today);
+            if (checkOut) checkOut.setAttribute('min', today);
+        }
+
+        // ========== TOAST ==========
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ========== TAB SWITCHING ==========
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+            
+            const container = document.getElementById('searchContainer');
+            if(tab === 'hotels') {
+                container.innerHTML = `
+                    <div class="search-grid">
+                        <div class="search-field">
+                            <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                            <input type="text" id="searchDest" placeholder="Search hotels..." onkeyup="filterHotels()">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-calendar"></i> Check-in</label>
+                            <input type="date" id="checkInDate">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-calendar"></i> Check-out</label>
+                            <input type="date" id="checkOutDate">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-bed"></i> Rooms</label>
+                            <select id="rooms">
+                                <option value="1">1 Room</option>
+                                <option value="2" selected>2 Rooms</option>
+                                <option value="3">3 Rooms</option>
+                            </select>
+                        </div>
+                        <div class="search-field">
+                            <button class="btn-secondary" style="width: 100%; margin-top: 1.8rem;" onclick="searchHotels()">
+                                <i class="fas fa-search"></i> Search Hotels
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if(tab === 'packages') {
+                container.innerHTML = `
+                    <div class="search-grid">
+                        <div class="search-field">
+                            <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                            <input type="text" id="searchDest" placeholder="Search packages..." onkeyup="filterPackages()">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-calendar"></i> Start Date</label>
+                            <input type="date" id="checkInDate">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-users"></i> Travelers</label>
+                            <select id="travelers">
+                                <option value="1">1 Person</option>
+                                <option value="2" selected>2 People</option>
+                                <option value="4">4 People</option>
+                                <option value="6">6+ People</option>
+                            </select>
+                        </div>
+                        <div class="search-field">
+                            <button class="btn-secondary" style="width: 100%; margin-top: 1.8rem;" onclick="searchPackages()">
+                                <i class="fas fa-search"></i> Search Packages
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="search-grid">
+                        <div class="search-field">
+                            <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                            <input type="text" id="searchDest" placeholder="Where to?" onkeyup="filterDestinations()">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-calendar"></i> Check-in Date</label>
+                            <input type="date" id="checkInDate">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-calendar"></i> Check-out Date</label>
+                            <input type="date" id="checkOutDate">
+                        </div>
+                        <div class="search-field">
+                            <label><i class="fas fa-users"></i> Travelers</label>
+                            <select id="travelers">
+                                <option value="1">1 Person</option>
+                                <option value="2" selected>2 People</option>
+                                <option value="3">3 People</option>
+                                <option value="4">4 People</option>
+                            </select>
+                        </div>
+                        <div class="search-field">
+                            <button class="btn-secondary" style="width: 100%; margin-top: 1.8rem;" onclick="searchBookings()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            setTodayDate();
+        }
+
+        // ========== LOAD FUNCTIONS ==========
+        function loadDestinations(data) {
+            const grid = document.getElementById('destGrid');
+            const items = data || destinations;
+            grid.innerHTML = items.map(dest => createCard(dest)).join('');
+        }
+
+        function loadHotels() {
+            const grid = document.getElementById('hotelsGrid');
+            grid.innerHTML = hotels.map(hotel => createCard(hotel)).join('');
+        }
+
+        function loadPackages() {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = packages.map(pkg => createCard(pkg)).join('');
+        }
+
+        function createCard(item) {
+            const badge = item.badge ? `<span class="badge">${item.badge}</span>` : '';
+            const days = item.days ? `<div style="font-size: 0.95rem; color: var(--secondary); font-weight: 700; margin-top: 0.25rem;"><i class="fas fa-clock"></i> ${item.days}</div>` : '';
+            const features = item.features ? `
+                <div class="dest-features">
+                    ${item.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+                </div>
+            ` : '';
+            
+            return `
+                <div class="dest-card" onclick="openBookingModal('${item.type}', '${item.name.replace(/'/g, "\\'")}', ${item.price})">
+                    <div class="dest-image" style="background-image: url('${item.image}')">
+                        ${badge}
+                    </div>
+                    <div class="dest-info">
+                        <div class="dest-location">
+                            <i class="fas fa-map-marker-alt"></i> ${item.location}
+                        </div>
+                        <h3 class="dest-title">${item.name}</h3>
+                        <div class="rating">
+                            ${getStars(item.rating)} <span style="color: var(--gray);">${item.rating}</span>
+                        </div>
+                        ${days}
+                        ${features}
+                        <div class="dest-price" style="margin-top: 0.75rem;">₹${item.price.toLocaleString()}<span style="font-size: 0.8rem; font-weight: normal; color: var(--gray);">/person</span></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStars(rating) {
+            let stars = '';
+            for(let i = 1; i <= 5; i++) {
+                if(i <= rating) stars += '<i class="fas fa-star"></i>';
+                else if(i - 0.5 <= rating) stars += '<i class="fas fa-star-half-alt"></i>';
+                else stars += '<i class="far fa-star"></i>';
+            }
+            return stars;
+        }
+
+        // ========== FILTER FUNCTIONS ==========
+        function filterDestinations() {
+            const search = document.getElementById('searchDest')?.value.toLowerCase() || '';
+            const filtered = destinations.filter(d => d.name.toLowerCase().includes(search) || d.location.toLowerCase().includes(search));
+            document.getElementById('destGrid').innerHTML = filtered.map(dest => createCard(dest)).join('');
+        }
+
+        function filterHotels() {
+            const search = document.getElementById('searchDest')?.value.toLowerCase() || '';
+            const filtered = hotels.filter(h => h.name.toLowerCase().includes(search) || h.location.toLowerCase().includes(search));
+            document.getElementById('hotelsGrid').innerHTML = filtered.map(hotel => createCard(hotel)).join('');
+        }
+
+        function filterPackages() {
+            const search = document.getElementById('searchDest')?.value.toLowerCase() || '';
+            const filtered = packages.filter(p => p.name.toLowerCase().includes(search) || p.location.toLowerCase().includes(search));
+            document.getElementById('packagesGrid').innerHTML = filtered.map(pkg => createCard(pkg)).join('');
+        }
+
+        function filterByCategory(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (category === 'all') {
+                loadDestinations();
+            } else {
+                const filtered = destinations.filter(d => d.category === category);
+                loadDestinations(filtered);
+            }
+        }
+
+        // ========== SEARCH FUNCTIONS ==========
+        function searchBookings() {
+            showSection(currentTab === 'flights' ? 'destinations' : currentTab);
+        }
+
+        function searchHotels() {
+            showSection('hotels');
+        }
+
+        function searchPackages() {
+            showSection('packages');
+        }
+
+        // ========== SECTION NAVIGATION ==========
+        function showSection(section) {
+            document.getElementById('home-section').style.display = 'none';
+            document.getElementById('destinations-section').style.display = 'none';
+            document.getElementById('hotels-section').style.display = 'none';
+            document.getElementById('packages-section').style.display = 'none';
+            document.getElementById('history-section').style.display = 'none';
+            document.getElementById('footer').style.display = section === 'home' ? 'none' : 'block';
+            
+            if(section === 'home') {
+                document.getElementById('home-section').style.display = 'flex';
+            } else {
+                document.getElementById(section + '-section').style.display = 'block';
+                if(section === 'history') loadBookingHistory();
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========== MODAL FUNCTIONS ==========
+        function openBookingModal(type, name, price) {
+            document.getElementById('bookingModal').style.display = 'flex';
+            document.getElementById('bookingType').value = type;
+            document.getElementById('itemName').value = name;
+            document.getElementById('itemPrice').value = price;
+            document.getElementById('modalTitle').textContent = `Book: ${name}`;
+            document.getElementById('bookingSummary').innerHTML = `
+                <i class="fas fa-info-circle"></i> 
+                Booking <strong>${name}</strong> (${type.toUpperCase()}) — 
+                <strong>₹${parseInt(price).toLocaleString()}</strong> per person
+            `;
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('modalCheckIn').setAttribute('min', today);
+            document.getElementById('modalCheckOut').setAttribute('min', today);
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+            document.getElementById('bookingForm').reset();
+            document.getElementById('successMsg').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // ========== BOOKING HANDLER ==========
+        function handleBooking(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<span class="loading"></span> Processing Payment...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                const booking = {
+                    id: Date.now(),
+                    type: document.getElementById('bookingType').value,
+                    itemName: document.getElementById('itemName').value,
+                    price: parseInt(document.getElementById('itemPrice').value),
+                    customerName: document.getElementById('custName').value,
+                    email: document.getElementById('custEmail').value,
+                    phone: document.getElementById('custPhone').value,
+                    gender: document.getElementById('custGender').value,
+                    address: document.getElementById('custAddress').value,
+                    payment: document.getElementById('custPayment').value,
+                    date: new Date().toLocaleDateString('en-IN'),
+                    checkIn: document.getElementById('modalCheckIn').value || 'N/A',
+                    checkOut: document.getElementById('modalCheckOut').value || 'N/A',
+                    travelers: document.getElementById('modalTravelers')?.value || '1',
+                    status: 'Confirmed'
+                };
+
+                bookings.push(booking);
+                localStorage.setItem('travelBookings', JSON.stringify(bookings));
+                
+                generatePDF(booking);
+                loadBookingHistory();
+                closeModal();
+                
+                submitBtn.innerHTML = 'Confirm Booking <i class="fas fa-arrow-right"></i>';
+                submitBtn.disabled = false;
+                
+                showToast(`✅ Booking for "${booking.itemName}" confirmed! PDF downloaded.`);
+            }, 2000);
+        }
+
+        // ========== PDF GENERATION ==========
+        function generatePDF(booking) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Background header
+            doc.setFillColor(37, 99, 235);
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            // Header text
+            doc.setFontSize(24);
+            doc.setTextColor(255, 255, 255);
+            doc.text('TravelIndia', 20, 22);
+            doc.setFontSize(11);
+            doc.text('Booking Confirmation Receipt', 20, 32);
+            doc.setFontSize(9);
+            doc.text('www.travelindia.com | 1800-123-4567', 20, 40);
+            
+            // Booking ID & Date on right
+            doc.setFontSize(10);
+            doc.text(`ID: #${booking.id}`, 190, 22, { align: 'right' });
+            doc.text(`Date: ${booking.date}`, 190,
+            30, { align: 'right' });
+            
+            // Separator
+            doc.setDrawColor(37, 99, 235);
+            doc.setLineWidth(0.5);
+            doc.line(20, 55, 190, 55);
+            
+            // Booking Details Section
+            doc.setFontSize(14);
+            doc.setTextColor(37, 99, 235);
+            doc.text('Booking Details', 20, 65);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(60, 60, 60);
+            const details = [
+                ['Type', booking.type.toUpperCase()],
+                ['Destination/Item', booking.itemName],
+                ['Check-in', booking.checkIn],
+                ['Check-out', booking.checkOut],
+                ['Travelers', booking.travelers + ' Person(s)'],
+                ['Price per person', '₹' + booking.price.toLocaleString()],
+                ['Total Amount', '₹' + (booking.price * parseInt(booking.travelers)).toLocaleString()],
+                ['Payment Method', booking.payment?.toUpperCase() || 'N/A'],
+                ['Status', booking.status]
+            ];
+            
+            let y = 75;
+            details.forEach(([label, value]) => {
+                doc.setTextColor(100, 100, 100);
+                doc.text(label + ':', 20, y);
+                doc.setTextColor(30, 30, 30);
+                doc.text(value, 80, y);
+                y += 7;
+            });
+            
+            // Separator
+            y += 5;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, y, 190, y);
+            y += 10;
+            
+            // Customer Details
+            doc.setFontSize(14);
+            doc.setTextColor(37, 99, 235);
+            doc.text('Customer Details', 20, y);
+            y += 10;
+            
+            doc.setFontSize(10);
+            const custDetails = [
+                ['Name', booking.customerName],
+                ['Email', booking.email],
+                ['Phone', booking.phone],
+                ['Gender', booking.gender?.charAt(0).toUpperCase() + booking.gender?.slice(1) || 'N/A'],
+                ['Address', booking.address || 'N/A']
+            ];
+            
+            custDetails.forEach(([label, value]) => {
+                doc.setTextColor(100, 100, 100);
+                doc.text(label + ':', 20, y);
+                doc.setTextColor(30, 30, 30);
+                doc.text(value || 'N/A', 80, y);
+                y += 7;
+            });
+            
+            // Total Amount Box
+            y += 10;
+            doc.setFillColor(239, 246, 255);
+            doc.roundedRect(20, y, 170, 25, 3, 3, 'F');
+            doc.setFontSize(12);
+            doc.setTextColor(37, 99, 235);
+            doc.text('Total Amount Payable:', 30, y + 10);
+            doc.setFontSize(16);
+            doc.text('₹' + (booking.price * parseInt(booking.travelers || 1)).toLocaleString(), 30, y + 20);
+            
+            // Footer
+            doc.setFontSize(9);
+            doc.setTextColor(150, 150, 150);
+            doc.text('This is a computer-generated receipt. No signature required.', 105, 265, { align: 'center' });
+            doc.text('Thank you for booking with TravelIndia! Have a wonderful trip! 🌟', 105, 272, { align: 'center' });
+            doc.text('For support: support@travelindia.com | Toll Free: 1800-123-4567', 105, 279, { align: 'center' });
+            
+            // Save
+            doc.save(`TravelIndia_Booking_${booking.id}.pdf`);
+        }
+
+        // ========== BOOKING HISTORY ==========
+        function loadBookingHistory() {
+            const historyList = document.getElementById('historyList');
+            const statsBar = document.getElementById('statsBar');
+            
+            if(bookings.length === 0) {
+                statsBar.innerHTML = '';
+                historyList.innerHTML = `
+                    <div class="empty-history">
+                        <i class="fas fa-suitcase-rolling"></i>
+                        <h3>No bookings yet</h3>
+                        <p>Start exploring India and make your first booking!</p>
+                        <button class="btn-primary" style="margin-top: 1rem;" onclick="showSection('destinations')">
+                            <i class="fas fa-compass"></i> Explore Destinations
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Stats
+            const totalSpent = bookings.reduce((sum, b) => sum + b.price * parseInt(b.travelers || 1), 0);
+            statsBar.innerHTML = `
+                <div class="stat-card">
+                    <i class="fas fa-receipt"></i>
+                    <h3>${bookings.length}</h3>
+                    <p>Total Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-rupee-sign"></i>
+                    <h3>₹${totalSpent.toLocaleString()}</h3>
+                    <p>Total Spent</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>${new Set(bookings.map(b => b.itemName)).size}</h3>
+                    <p>Unique Places</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>${bookings.filter(b => b.status === 'Confirmed').length}</h3>
+                    <p>Confirmed</p>
+                </div>
+            `;
+            
+            historyList.innerHTML = bookings.slice().reverse().map(booking => `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <h3><i class="fas fa-${booking.type === 'hotel' ? 'hotel' : booking.type === 'package' ? 'suitcase' : 'map-marker-alt'}"></i> ${booking.itemName}</h3>
+                        <div class="booking-details">
+                            <p><strong>Booking ID:</strong> #${booking.id}</p>
+                            <p><strong>Type:</strong> ${booking.type.toUpperCase()} | <strong>Booked on:</strong> ${booking.date}</p>
+                            <p><strong>Check-in:</strong> ${booking.checkIn} → <strong>Check-out:</strong> ${booking.checkOut}</p>
+                            <p><strong>Travelers:</strong> ${booking.travelers} | <strong>Total:</strong> ₹${(booking.price * parseInt(booking.travelers || 1)).toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <div class="booking-actions">
+                        <button class="btn-small btn-view" onclick="viewBooking(${booking.id})">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn-small btn-download" onclick="downloadBookingPDF(${booking.id})">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn-small btn-delete" onclick="deleteBooking(${booking.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewBooking(id) {
+            const booking = bookings.find(b => b.id === id);
+            if(booking) {
+                const total = booking.price * parseInt(booking.travelers || 1);
+                document.getElementById('viewModalBody').innerHTML = `
+                    <div class="view-row">
+                        <span class="view-label">Booking ID</span>
+                        <span class="view-value">#${booking.id}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Status</span>
+                        <span class="view-value" style="color: var(--success);">✅ ${booking.status}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Type</span>
+                        <span class="view-value">${booking.type.toUpperCase()}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Item</span>
+                        <span class="view-value">${booking.itemName}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Price/Person</span>
+                        <span class="view-value">₹${booking.price.toLocaleString()}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Travelers</span>
+                        <span class="view-value">${booking.travelers} Person(s)</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Total Amount</span>
+                        <span class="view-value" style="color: var(--primary); font-size: 1.2rem;">₹${total.toLocaleString()}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Check-in</span>
+                        <span class="view-value">${booking.checkIn}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Check-out</span>
+                        <span class="view-value">${booking.checkOut}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Customer</span>
+                        <span class="view-value">${booking.customerName}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Email</span>
+                        <span class="view-value">${booking.email}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Phone</span>
+                        <span class="view-value">${booking.phone}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Payment</span>
+                        <span class="view-value">${booking.payment?.toUpperCase() || 'N/A'}</span>
+                    </div>
+                    <div class="view-row">
+                        <span class="view-label">Booked On</span>
+                        <span class="view-value">${booking.date}</span>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button class="btn-small btn-download" onclick="downloadBookingPDF(${booking.id})" style="padding: 0.75rem 2rem; font-size: 1rem;">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                    </div>
+                `;
+                document.getElementById('viewModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function downloadBookingPDF(id) {
+            const booking = bookings.find(b => b.id === id);
+            if(booking) {
+                generatePDF(booking);
+                showToast('PDF downloaded successfully!');
+            }
+        }
+
+        function deleteBooking(id) {
+            if(confirm('Are you sure you want to delete this booking?')) {
+                bookings = bookings.filter(b => b.id !== id);
+                localStorage.setItem('travelBookings', JSON.stringify(bookings));
+                loadBookingHistory();
+                showToast('Booking deleted successfully.');
+            }
+        }
+
+        // ========== EVENT LISTENERS ==========
+        window.onclick = function(event) {
+            const bookingModal = document.getElementById('bookingModal');
+            const viewModal = document.getElementById('viewModal');
+            if(event.target === bookingModal) closeModal();
+            if(event.target === viewModal) closeViewModal();
+        }
+
+        // Keyboard escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeViewModal();
+            }
+        });
+
+        // Initial footer hide on home
+        document.getElementById('footer').style.display = 'none';
+    </script>
+</body>
+</html>
